@@ -13,7 +13,7 @@ export const Icons = {
       width="16px"
       height="16px"
       viewBox="0 0 16 16"
-      enable-background="new 0 0 16 16"
+      enableBackground="new 0 0 16 16"
       xmlSpace="preserve"
     >
       {" "}

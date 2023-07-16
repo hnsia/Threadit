@@ -652,7 +652,7 @@
 
 "@radix-ui/react-toast@^1.1.4":
   version "1.1.4"
-  resolved "https://registry.npmjs.org/@radix-ui/react-toast/-/react-toast-1.1.4.tgz"
+  resolved "https://registry.yarnpkg.com/@radix-ui/react-toast/-/react-toast-1.1.4.tgz#9a7fc2d71700886f3292f7699c905f1e01be59e1"
   integrity sha512-wf+fc8DOywrpRK3jlPlWVe+ELYGHdKDaaARJZNuUTWyWYq7+ANCFLp4rTjZ/mcGkJJQ/vZ949Zis9xxEpfq9OA==
   dependencies:
     "@babel/runtime" "^7.13.10"
