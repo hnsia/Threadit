@@ -40,7 +40,6 @@ const UserAuthForm: React.FC<UserAuthFormProps> = ({ className, ...props }) => {
         {isLoading ? null : <Icons.google className="h-4 w-4 mr-2" />}
         Google
       </Button>
-      ;
     </div>
   );
 };
