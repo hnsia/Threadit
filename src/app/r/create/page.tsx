@@ -5,14 +5,17 @@ import { Input } from "@/components/ui/Input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { CreateSubthreaditPayload } from "@/lib/validators/subthreadit";
+import { toast } from "@/hooks/use-toast";
+import { useCustomToast } from "@/hooks/use-custom-toast";
 
 interface pageProps {}
 
 const page: React.FC<pageProps> = ({}) => {
   const [input, setInput] = useState<string>("");
   const router = useRouter();
+  const { loginToast } = useCustomToast();
 
   const { mutate: createCommunity, isLoading } = useMutation({
     mutationFn: async () => {
@@ -22,6 +25,39 @@ const page: React.FC<pageProps> = ({}) => {
 
       const { data } = await axios.post("/api/subthreadit", payload);
       return data as string;
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 409) {
+          return toast({
+            title: "Subthreadit already exists.",
+            description: "Please choose a different subthreadit name.",
+            variant: "destructive",
+          });
+        }
+
+        if (error.response?.status === 422) {
+          return toast({
+            title: "Invalid subthreadit name.",
+            description:
+              "Please choose a different subthreadit name between 3 to 21 characters.",
+            variant: "destructive",
+          });
+        }
+
+        if (error.response?.status === 401) {
+          return loginToast();
+        }
+      }
+
+      toast({
+        title: "Something went wrong.",
+        description: "Could not create subthreadit. Please try again.",
+        variant: "destructive",
+      });
+    },
+    onSuccess: (data) => {
+      router.push(`/r/${data}`);
     },
   });
 
