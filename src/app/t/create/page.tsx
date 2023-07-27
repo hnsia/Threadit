@@ -57,7 +57,7 @@ const page: React.FC<pageProps> = ({}) => {
       });
     },
     onSuccess: (data) => {
-      router.push(`/r/${data}`);
+      router.push(`/t/${data}`);
     },
   });
 
@@ -78,7 +78,7 @@ const page: React.FC<pageProps> = ({}) => {
 
           <div className="relative">
             <p className="absolute text-sm left-0 w-8 inset-y-0 grid place-items-center text-zinc-400">
-              r/
+              t/
             </p>
             <Input
               value={input}

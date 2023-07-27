@@ -48,7 +48,7 @@ const UserAccountNav: React.FC<UserAccountNavProps> = ({ user }) => {
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
-          <Link href="/r/create">Create community</Link>
+          <Link href="/t/create">Create community</Link>
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
