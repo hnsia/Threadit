@@ -58,8 +58,53 @@ const SubscribeLeaveToggle: React.FC<SubscribeLeaveToggleProps> = ({
     },
   });
 
+  const { mutate: unsubscribe, isLoading: isUnsubLoading } = useMutation({
+    mutationFn: async () => {
+      const payload: SubscribeToSubthreaditPayload = {
+        subthreaditId,
+      };
+
+      const { data } = await axios.post(
+        "/api/subthreadit/unsubscribe",
+        payload
+      );
+      return data as string;
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 401) {
+          return loginToast();
+        }
+      }
+
+      return toast({
+        title: "Something went wrong.",
+        description:
+          "Could not unsubscribe to subthreadit, please try again later.",
+        variant: "destructive",
+      });
+    },
+    onSuccess: () => {
+      startTransition(() => {
+        router.refresh();
+      });
+
+      return toast({
+        title: "Unsubscribed.",
+        description: `You are now unsubscribed from t/${subthreaditName}.`,
+      });
+    },
+  });
+
   return isSubscribed ? (
-    <Button className="w-full mt-1 mb-4">Leave community</Button>
+    <Button
+      isLoading={isUnsubLoading}
+      onClick={() => unsubscribe()}
+      className="w-full mt-1 mb-4"
+      variant="destructive"
+    >
+      Leave community
+    </Button>
   ) : (
     <Button
       isLoading={isSubLoading}
