@@ -4,7 +4,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { useForm } from "react-hook-form";
 import { PostCreationRequest, PostValidator } from "@/lib/validators/post";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import EditorJS from "@editorjs/editorjs";
 import { uploadFiles } from "@/lib/uploadthing";
 
@@ -27,6 +27,14 @@ const Editor: React.FC<EditorProps> = ({ subthreaditId }) => {
   });
 
   const ref = useRef<EditorJS>();
+  const [isMounted, setIsMounted] = useState<boolean>(false);
+  const _titleRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsMounted(true);
+    }
+  }, []);
 
   const initializeEditor = useCallback(async () => {
     const EditorJS = (await import("@editorjs/editorjs")).default;
@@ -73,19 +81,54 @@ const Editor: React.FC<EditorProps> = ({ subthreaditId }) => {
               },
             },
           },
+          list: List,
+          code: Code,
+          inlineCode: InlineCode,
+          table: Table,
+          embed: Embed,
         },
       });
     }
   }, []);
+
+  useEffect(() => {
+    const init = async () => {
+      await initializeEditor();
+
+      setTimeout(() => {
+        _titleRef.current?.focus();
+      }, 0);
+    };
+
+    if (isMounted) {
+      init();
+
+      return () => {
+        ref.current?.destroy();
+        ref.current = undefined;
+      };
+    }
+  }, [isMounted, initializeEditor]);
+
+  const { ref: titleRef, ...rest } = register("title");
 
   return (
     <div className="w-full p-4 bg-zinc-50 rounded-lg border border-zinc-200">
       <form id="subthreadit-post-form" className="w-fit" onSubmit={() => {}}>
         <div className="prose prose-stone dark:prose-invert">
           <TextareaAutosize
+            ref={(e) => {
+              titleRef(e);
+
+              // @ts-ignore
+              _titleRef.current = e;
+            }}
+            {...rest}
             placeholder="Title"
             className="w-full resize-none appearance-none overflow-hidden bg-transparent text-5xl font-bold focus:outline-none"
           />
+
+          <div id="editor" className="min-h-[500px]" />
         </div>
       </form>
     </div>
