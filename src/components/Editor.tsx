@@ -6,6 +6,7 @@ import { PostCreationRequest, PostValidator } from "@/lib/validators/post";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useRef } from "react";
 import EditorJS from "@editorjs/editorjs";
+import { uploadFiles } from "@/lib/uploadthing";
 
 interface EditorProps {
   subthreaditId: string;
@@ -53,6 +54,23 @@ const Editor: React.FC<EditorProps> = ({ subthreaditId }) => {
             class: LinkTool,
             config: {
               endpoint: "/api/link",
+            },
+          },
+          image: {
+            class: ImageTool,
+            config: {
+              uploader: {
+                async uploadByFile(file: File) {
+                  const [res] = await uploadFiles([file], "imageUploader");
+
+                  return {
+                    success: 1,
+                    file: {
+                      url: res.fileUrl,
+                    },
+                  };
+                },
+              },
             },
           },
         },
