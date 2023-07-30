@@ -7,6 +7,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useEffect, useRef, useState } from "react";
 import EditorJS from "@editorjs/editorjs";
 import { uploadFiles } from "@/lib/uploadthing";
+import { toast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { usePathname, useRouter } from "next/navigation";
 
 interface EditorProps {
   subthreaditId: string;
@@ -29,12 +33,8 @@ const Editor: React.FC<EditorProps> = ({ subthreaditId }) => {
   const ref = useRef<EditorJS>();
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const _titleRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setIsMounted(true);
-    }
-  }, []);
+  const pathname = usePathname();
+  const router = useRouter();
 
   const initializeEditor = useCallback(async () => {
     const EditorJS = (await import("@editorjs/editorjs")).default;
@@ -92,6 +92,24 @@ const Editor: React.FC<EditorProps> = ({ subthreaditId }) => {
   }, []);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsMounted(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (Object.keys(errors).length) {
+      for (const [_key, value] of Object.entries(errors)) {
+        toast({
+          title: "Something went wrong.",
+          description: (value as { message: string }).message,
+          variant: "destructive",
+        });
+      }
+    }
+  }, [errors]);
+
+  useEffect(() => {
     const init = async () => {
       await initializeEditor();
 
@@ -110,11 +128,66 @@ const Editor: React.FC<EditorProps> = ({ subthreaditId }) => {
     }
   }, [isMounted, initializeEditor]);
 
+  const { mutate: createPost } = useMutation({
+    mutationFn: async ({
+      title,
+      content,
+      subthreaditId,
+    }: PostCreationRequest) => {
+      const payload: PostCreationRequest = {
+        subthreaditId,
+        title,
+        content,
+      };
+      const { data } = await axios.post(
+        "/api/subthreadit/post/create",
+        payload
+      );
+      return data;
+    },
+    onError: () => {
+      return toast({
+        title: "Something went wrong.",
+        description: "Your post was not published, please try again later.",
+        variant: "destructive",
+      });
+    },
+    onSuccess: () => {
+      const newPathname = pathname.split("/").slice(0, -1).join("/");
+      router.push(newPathname);
+      router.refresh();
+
+      return toast({
+        description: "Your post has been published.",
+      });
+    },
+  });
+
+  async function onSubmit(data: PostCreationRequest) {
+    const blocks = await ref.current?.save();
+
+    const payload: PostCreationRequest = {
+      title: data.title,
+      content: blocks,
+      subthreaditId,
+    };
+
+    createPost(payload);
+  }
+
+  if (!isMounted) {
+    return null;
+  }
+
   const { ref: titleRef, ...rest } = register("title");
 
   return (
     <div className="w-full p-4 bg-zinc-50 rounded-lg border border-zinc-200">
-      <form id="subthreadit-post-form" className="w-fit" onSubmit={() => {}}>
+      <form
+        id="subthreadit-post-form"
+        className="w-fit"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <div className="prose prose-stone dark:prose-invert">
           <TextareaAutosize
             ref={(e) => {
