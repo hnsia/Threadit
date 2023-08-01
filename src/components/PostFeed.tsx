@@ -63,11 +63,21 @@ const PostFeed: React.FC<PostFeedProps> = ({
         if (index === posts.length - 1) {
           return (
             <li key={post.id} ref={ref}>
-              <Post />
+              <Post
+                subthreaditName={post.subthreadit.name}
+                post={post}
+                commentAmount={post.comments.length}
+              />
             </li>
           );
         } else {
-          return <Post />;
+          return (
+            <Post
+              subthreaditName={post.subthreadit.name}
+              post={post}
+              commentAmount={post.comments.length}
+            />
+          );
         }
       })}
     </ul>
