@@ -7,6 +7,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRef } from "react";
+import Post from "./Post";
 
 interface PostFeedProps {
   initialPosts: ExtendedPost[];
@@ -59,7 +60,15 @@ const PostFeed: React.FC<PostFeedProps> = ({
           (vote) => vote.userId === session?.user.id
         );
 
-        return <div>post</div>;
+        if (index === posts.length - 1) {
+          return (
+            <li key={post.id} ref={ref}>
+              <Post />
+            </li>
+          );
+        } else {
+          return <Post />;
+        }
       })}
     </ul>
   );

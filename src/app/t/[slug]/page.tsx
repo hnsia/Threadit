@@ -39,7 +39,10 @@ const page = async ({ params }: PageProps) => {
         t/{subthreadit.name}
       </h1>
       <MiniCreatePost session={session} />
-      <PostFeed initialPosts={subthreadit.posts} />
+      <PostFeed
+        initialPosts={subthreadit.posts}
+        subthreaditName={subthreadit.name}
+      />
     </>
   );
 };
