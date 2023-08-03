@@ -49,7 +49,7 @@ const PostFeed: React.FC<PostFeedProps> = ({
   return (
     <ul className="flex flex-col col-span-2 space-y-6">
       {posts.map((post, index) => {
-        const votesAmt = post.votes.reduce((acc, vote) => {
+        const votesAmount = post.votes.reduce((acc, vote) => {
           if (vote.type === "UP") return acc + 1;
           if (vote.type === "DOWN") return acc - 1;
 
@@ -64,6 +64,8 @@ const PostFeed: React.FC<PostFeedProps> = ({
           return (
             <li key={post.id} ref={ref}>
               <Post
+                currentVote={currentVote}
+                votesAmount={votesAmount}
                 subthreaditName={post.subthreadit.name}
                 post={post}
                 commentAmount={post.comments.length}
@@ -73,6 +75,8 @@ const PostFeed: React.FC<PostFeedProps> = ({
         } else {
           return (
             <Post
+              currentVote={currentVote}
+              votesAmount={votesAmount}
               subthreaditName={post.subthreadit.name}
               post={post}
               commentAmount={post.comments.length}
