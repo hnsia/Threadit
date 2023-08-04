@@ -74,13 +74,15 @@ const PostFeed: React.FC<PostFeedProps> = ({
           );
         } else {
           return (
-            <Post
-              currentVote={currentVote}
-              votesAmount={votesAmount}
-              subthreaditName={post.subthreadit.name}
-              post={post}
-              commentAmount={post.comments.length}
-            />
+            <li key={post.id}>
+              <Post
+                currentVote={currentVote}
+                votesAmount={votesAmount}
+                subthreaditName={post.subthreadit.name}
+                post={post}
+                commentAmount={post.comments.length}
+              />
+            </li>
           );
         }
       })}
