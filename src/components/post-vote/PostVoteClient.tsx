@@ -63,6 +63,19 @@ const PostVoteClient: React.FC<PostVoteClientProps> = ({
         variant: "destructive",
       });
     },
+    onMutate: (type: VoteType) => {
+      if (currentVote === type) {
+        setCurrentVote(undefined);
+        if (type === "UP") setVotesAmount((prev) => prev - 1);
+        else if (type === "DOWN") setVotesAmount((prev) => prev + 1);
+      } else {
+        setCurrentVote(type);
+        if (type === "UP")
+          setVotesAmount((prev) => prev + (currentVote ? 2 : 1));
+        else if (type === "DOWN")
+          setVotesAmount((prev) => prev - (currentVote ? 2 : 1));
+      }
+    },
   });
 
   return (
