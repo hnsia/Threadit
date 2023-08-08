@@ -26,6 +26,9 @@ const page = async ({ params }: PageProps) => {
           comments: true,
           subthreadit: true,
         },
+        orderBy: {
+          createdAt: "desc",
+        },
       },
     },
     take: INFINITE_SCROLLING_PAGINATION_RESULTS,
