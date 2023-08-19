@@ -38,7 +38,7 @@ const UserNameForm: React.FC<UserNameFormProps> = ({ user }) => {
 
   const router = useRouter();
 
-  const {} = useMutation({
+  const { mutate: updateUsername, isLoading } = useMutation({
     mutationFn: async ({ name }: UserNameRequest) => {
       const payload: UserNameRequest = { name };
 
@@ -72,7 +72,7 @@ const UserNameForm: React.FC<UserNameFormProps> = ({ user }) => {
   });
 
   return (
-    <form onSubmit={handleSubmit(() => {})}>
+    <form onSubmit={handleSubmit((e) => updateUsername(e))}>
       <Card>
         <CardHeader>
           <CardTitle>Your username</CardTitle>
@@ -104,7 +104,7 @@ const UserNameForm: React.FC<UserNameFormProps> = ({ user }) => {
         </CardContent>
 
         <CardFooter>
-          <Button>Change name</Button>
+          <Button isLoading={isLoading}>Change name</Button>
         </CardFooter>
       </Card>
     </form>
