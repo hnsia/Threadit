@@ -10,9 +10,7 @@ import { CreateSubthreaditPayload } from "@/lib/validators/subthreadit";
 import { toast } from "@/hooks/use-toast";
 import { useCustomToast } from "@/hooks/use-custom-toast";
 
-interface pageProps {}
-
-const page: React.FC<pageProps> = ({}) => {
+const Page = () => {
   const [input, setInput] = useState<string>("");
   const router = useRouter();
   const { loginToast } = useCustomToast();
@@ -105,4 +103,4 @@ const page: React.FC<pageProps> = ({}) => {
   );
 };
 
-export default page;
+export default Page;
